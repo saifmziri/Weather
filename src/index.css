@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Agu Display";
+  src: url("/fonts/AguDisplay-Regular-VariableFont_MORF.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "El Messiri";
+  src: url("/fonts/ElMessiri-VariableFont_wght.ttf") format("truetype");
+  font-weight: 200 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: "Agu Display", sans-serif;
+}
+
+@utility font-ar {
+  font-family: "El Messiri", sans-serif;
+}
+
+@utility font-en {
+  font-family: "Agu Display", sans-serif;
+}
