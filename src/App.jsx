@@ -37,7 +37,7 @@ function App() {
       axios
         .get(
           `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&lang=${langParam}`,
-          { signal }
+          { signal },
         )
         .then((response) => {
           const data = response.data;
@@ -60,7 +60,7 @@ function App() {
           }
         });
     },
-    [apiKey]
+    [apiKey],
   );
 
   // استدعاء الـ API عند تغيير اللغة أو تغيير المدينة المختارة
@@ -68,7 +68,12 @@ function App() {
     const controller = new AbortController();
     const langParam = isArabic ? "ar" : "en";
 
-    fetchWeather(currentCity.lat, currentCity.lon, langParam, controller.signal);
+    fetchWeather(
+      currentCity.lat,
+      currentCity.lon,
+      langParam,
+      controller.signal,
+    );
 
     return () => {
       controller.abort();
@@ -93,19 +98,27 @@ function App() {
   }).format(new Date());
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center bg-linear-to-br from-blue-600 via-blue-700 to-indigo-900 font-sans antialiased p-4">
+    <div
+      className={`min-h-screen w-full flex flex-col justify-center items-center bg-linear-to-br from-blue-600 via-blue-700 to-indigo-900 antialiased p-4 ${
+        isArabic ? "font-ar" : "font-en"
+      }`}
+    >
       {/* اختيار المدينة */}
       <div className="w-full max-w-md mb-4" dir={isArabic ? "rtl" : "ltr"}>
         <label className="block text-blue-200 text-xs font-semibold uppercase tracking-wider mb-2 px-1">
           {t("chooseCity")}
         </label>
-        <select 
+        <select
           value={selectedCityIndex}
           onChange={handleCityChange}
           className="w-full bg-white/10 hover:bg-white/15 active:bg-white/20 text-white font-medium py-3 px-4 rounded-2xl border border-white/20 focus:outline-hidden focus:ring-2 focus:ring-white/30 backdrop-blur-md cursor-pointer transition-all duration-200"
         >
           {CITIES.map((city, index) => (
-            <option key={index} value={index} className="bg-slate-800 text-white">
+            <option
+              key={index}
+              value={index}
+              className="bg-slate-800 text-white"
+            >
               {isArabic ? city.nameAr : city.nameEn}
             </option>
           ))}
@@ -141,7 +154,9 @@ function App() {
                 <h1 className="text-white text-3xl font-black tracking-wide drop-shadow-sm">
                   {weather.city || t("loading")}
                 </h1>
-                <p className="text-blue-200 text-sm font-medium mt-1">{formattedDate}</p>
+                <p className="text-blue-200 text-sm font-medium mt-1">
+                  {formattedDate}
+                </p>
               </div>
 
               <span className="flex h-3 w-3 relative">
@@ -178,12 +193,16 @@ function App() {
                 </div>
               </div>
 
-              <div className={`${isArabic ? "text-right" : "text-left"} flex flex-col justify-center`}>
+              <div
+                className={`${isArabic ? "text-right" : "text-left"} flex flex-col justify-center`}
+              >
                 <div className="flex items-start">
                   <span className="text-white text-6xl font-extrabold tracking-tighter drop-shadow-md">
                     {weather.temp !== null ? Math.round(weather.temp) : "--"}
                   </span>
-                  <span className="text-blue-300 text-2xl font-light mt-1 mx-1">°C</span>
+                  <span className="text-blue-300 text-2xl font-light mt-1 mx-1">
+                    °C
+                  </span>
                 </div>
                 <p className="text-blue-100 text-sm font-semibold tracking-wider uppercase mt-1">
                   {weather.desc}
@@ -194,21 +213,27 @@ function App() {
             {/* Footer Metrics */}
             <div className="mt-8 pt-6 border-t border-white/10 grid grid-cols-3 gap-2 text-center">
               <div className="flex flex-col items-center">
-                <span className="text-xs text-blue-200/70 font-medium">{t("min")}</span>
+                <span className="text-xs text-blue-200/70 font-medium">
+                  {t("min")}
+                </span>
                 <span className="text-white text-lg font-bold mt-1">
                   {weather.min !== null ? `${Math.round(weather.min)}°` : "--"}
                 </span>
               </div>
 
               <div className="flex flex-col items-center border-x border-white/10">
-                <span className="text-xs text-blue-200/70 font-medium">{t("humidity")}</span>
+                <span className="text-xs text-blue-200/70 font-medium">
+                  {t("humidity")}
+                </span>
                 <span className="text-white text-lg font-bold mt-1">
                   {weather.humidity !== null ? `${weather.humidity}%` : "--"}
                 </span>
               </div>
 
               <div className="flex flex-col items-center">
-                <span className="text-xs text-blue-200/70 font-medium">{t("max")}</span>
+                <span className="text-xs text-blue-200/70 font-medium">
+                  {t("max")}
+                </span>
                 <span className="text-white text-lg font-bold mt-1">
                   {weather.max !== null ? `${Math.round(weather.max)}°` : "--"}
                 </span>
