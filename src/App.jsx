@@ -1,6 +1,7 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchWeather } from "./features/weathers/weatherApiSlice";
 
 // مصفوفة الدول والمدن مع إحداثياتها الدقيقة
 const CITIES = [
@@ -14,74 +15,35 @@ const CITIES = [
 ];
 
 function App() {
+  const dispatch = useDispatch();
+  const weather = useSelector((state) => state.weather.weather);
+  const loading = useSelector((state) => state.weather.isLoading);
+
   const { t, i18n } = useTranslation("weather");
   const isArabic = i18n.language === "ar";
 
-  const [loading, setLoading] = useState(true);
   const [selectedCityIndex, setSelectedCityIndex] = useState(0);
-  const [weather, setWeather] = useState({
-    city: "",
-    temp: null,
-    desc: "",
-    min: null,
-    max: null,
-    humidity: null,
-  });
-
-  const apiKey = "2dee2f1b3f3da94aef27fd53e421c98d";
   const currentCity = CITIES[selectedCityIndex];
 
-  // دالة جلب البيانات مع استقبال الإحداثيات ديناميكياً لمنع الـ Linter Error
-  const fetchWeather = useCallback(
-    (city, langParam, signal) => {
-      axios
-        .get(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}&lang=${langParam}`,
-          { signal },
-        )
-        .then((response) => {
-          const data = response.data;
-          setWeather({
-            city: langParam === "ar" ? city.nameAr : city.nameEn, // الاسم من المصفوفة، مو من الـ API
-            temp: data.main.temp - 273.15,
-            desc: data.weather[0].description,
-            min: data.main.temp_min - 273.15,
-            max: data.main.temp_max - 273.15,
-            humidity: data.main.humidity,
-          });
-          setLoading(false);
-        })
-        .catch((error) => {
-          if (axios.isCancel(error)) {
-            console.log("Request canceled successfully");
-          } else {
-            console.error("Error fetching weather data:", error);
-            setLoading(false);
-          }
-        });
-    },
-    [apiKey],
-  );
-  // استدعاء الـ API عند تغيير اللغة أو تغيير المدينة المختارة
+  // استدعاء واحد بس: يجيب الطقس عند تغيير المدينة أو اللغة
+  // الـ loading يصير تلقائياً من الـ slice (pending/fulfilled/rejected)
   useEffect(() => {
-    const controller = new AbortController();
     const langParam = isArabic ? "ar" : "en";
+    const action = dispatch(
+      fetchWeather({ city: currentCity, lang: langParam }),
+    );
 
-    fetchWeather(currentCity, langParam, controller.signal);
-
+    // نلغي الطلب القديم لو المستخدم بدّل المدينة/اللغة بسرعة
     return () => {
-      controller.abort();
+      action.abort();
     };
-  }, [isArabic, currentCity, fetchWeather]);
+  }, [isArabic, currentCity, dispatch]);
 
   const handleCityChange = (e) => {
-    setLoading(true);
     setSelectedCityIndex(Number(e.target.value));
   };
 
-  // تبديل اللغة عبر i18next مباشرة بدل حالة محلية مكررة
   const handleLanguageToggle = () => {
-    setLoading(true);
     i18n.changeLanguage(isArabic ? "en" : "ar");
   };
 
