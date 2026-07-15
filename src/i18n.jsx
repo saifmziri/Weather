@@ -23,6 +23,12 @@ i18n
     fallbackLng: "en",
     debug: true,
 
+    ns: ["weather"], // أسماء ملفات الترجمة
+    defaultNS: "weather", // الملف الافتراضي
+    backend: {
+      loadPath: "/locales/{{lng}}/{{ns}}.json",
+    },
+    supportedLngs: ["en", "ar"],
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },

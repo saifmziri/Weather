@@ -14,7 +14,7 @@ const CITIES = [
 ];
 
 function App() {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("weather");
   const isArabic = i18n.language === "ar";
 
   const [loading, setLoading] = useState(true);
@@ -33,16 +33,16 @@ function App() {
 
   // دالة جلب البيانات مع استقبال الإحداثيات ديناميكياً لمنع الـ Linter Error
   const fetchWeather = useCallback(
-    (lat, lon, langParam, signal) => {
+    (city, langParam, signal) => {
       axios
         .get(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&lang=${langParam}`,
+          `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}&lang=${langParam}`,
           { signal },
         )
         .then((response) => {
           const data = response.data;
           setWeather({
-            city: data.name,
+            city: langParam === "ar" ? city.nameAr : city.nameEn, // الاسم من المصفوفة، مو من الـ API
             temp: data.main.temp - 273.15,
             desc: data.weather[0].description,
             min: data.main.temp_min - 273.15,
@@ -62,18 +62,12 @@ function App() {
     },
     [apiKey],
   );
-
   // استدعاء الـ API عند تغيير اللغة أو تغيير المدينة المختارة
   useEffect(() => {
     const controller = new AbortController();
     const langParam = isArabic ? "ar" : "en";
 
-    fetchWeather(
-      currentCity.lat,
-      currentCity.lon,
-      langParam,
-      controller.signal,
-    );
+    fetchWeather(currentCity, langParam, controller.signal);
 
     return () => {
       controller.abort();
