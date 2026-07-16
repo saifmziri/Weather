@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchWeather } from "./features/weathers/weatherApiSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSun, faCloudShowersHeavy } from "@fortawesome/free-solid-svg-icons";
 
-// مصفوفة الدول والمدن مع إحداثياتها الدقيقة
 const CITIES = [
   { nameAr: "موسكو", nameEn: "Moscow", lat: 55.7558, lon: 37.6173 },
   { nameAr: "الرياض", nameEn: "Riyadh", lat: 24.7136, lon: 46.6753 },
@@ -25,19 +26,27 @@ function App() {
   const [selectedCityIndex, setSelectedCityIndex] = useState(0);
   const currentCity = CITIES[selectedCityIndex];
 
-  // استدعاء واحد بس: يجيب الطقس عند تغيير المدينة أو اللغة
-  // الـ loading يصير تلقائياً من الـ slice (pending/fulfilled/rejected)
   useEffect(() => {
     const langParam = isArabic ? "ar" : "en";
     const action = dispatch(
       fetchWeather({ city: currentCity, lang: langParam }),
     );
 
-    // نلغي الطلب القديم لو المستخدم بدّل المدينة/اللغة بسرعة
     return () => {
       action.abort();
     };
   }, [isArabic, currentCity, dispatch]);
+
+  const isHot = weather && weather.temp !== null && weather.temp > 25;
+
+  const bgClass = isHot
+    ? "bg-linear-to-br from-yellow-400 via-amber-500 to-amber-700"
+    : "bg-linear-to-br from-sky-400 via-blue-600 to-slate-800";
+
+  // كلاس التوهج البلوري الخلفي للأيقونة
+  const glowClass = isHot
+    ? "from-yellow-300 to-yellow-500"
+    : "from-blue-300 to-sky-500";
 
   const handleCityChange = (e) => {
     setSelectedCityIndex(Number(e.target.value));
@@ -55,12 +64,25 @@ function App() {
 
   return (
     <div
-      className={`min-h-screen w-full flex flex-col justify-center items-center bg-linear-to-br from-blue-600 via-blue-700 to-indigo-900 antialiased p-4 ${
+      className={`min-h-screen w-full flex flex-col justify-center items-center ${bgClass} antialiased p-4 transition-colors duration-500 relative overflow-hidden ${
         isArabic ? "font-ar" : "font-en"
       }`}
     >
+      {/* 🌧️ تأثير المطر المتحرك: تم استبدال الكلاسات المخصصة بالكلاسات القياسية لتفادي التحذيرات */}
+      {!isHot && (
+        <div className="absolute inset-0 pointer-events-none z-0 opacity-40">
+          <div className="absolute w-0.5 h-5 bg-white top-0 left-[10%] animate-rain" style={{ animationDuration: '0.8s' }}></div>
+          <div className="absolute w-0.5 h-6 bg-white top-0 left-[25%] animate-rain" style={{ animationDuration: '1.2s', animationDelay: '0.2s' }}></div>
+          <div className="absolute w-px h-4.5 bg-white top-0 left-[40%] animate-rain" style={{ animationDuration: '0.9s', animationDelay: '0.5s' }}></div>
+          <div className="absolute w-0.5 h-5.5 bg-white top-0 left-[55%] animate-rain" style={{ animationDuration: '1.1s', animationDelay: '0.1s' }}></div>
+          <div className="absolute w-px h-5 bg-white top-0 left-[70%] animate-rain" style={{ animationDuration: '0.7s', animationDelay: '0.4s' }}></div>
+          <div className="absolute w-0.5 h-6 bg-white top-0 left-[85%] animate-rain" style={{ animationDuration: '1.3s', animationDelay: '0.3s' }}></div>
+          <div className="absolute w-0.5 h-4.5 bg-white top-0 left-[95%] animate-rain" style={{ animationDuration: '1.0s', animationDelay: '0.6s' }}></div>
+        </div>
+      )}
+
       {/* اختيار المدينة */}
-      <div className="w-full max-w-md mb-4" dir={isArabic ? "rtl" : "ltr"}>
+      <div className="w-full max-w-md mb-4 relative z-10" dir={isArabic ? "rtl" : "ltr"}>
         <label className="block text-blue-200 text-xs font-semibold uppercase tracking-wider mb-2 px-1">
           {t("chooseCity")}
         </label>
@@ -82,7 +104,7 @@ function App() {
       </div>
 
       {/* Main Card */}
-      <div className="w-full max-w-md bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-2xl transition-all duration-300 hover:shadow-blue-500/10">
+      <div className="w-full max-w-md bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-2xl transition-all duration-300 hover:shadow-blue-500/10 relative z-10">
         {loading ? (
           <div className="animate-pulse space-y-6 py-4">
             <div className="flex justify-between items-center border-b border-white/10 pb-6">
@@ -108,7 +130,7 @@ function App() {
             <div className="flex justify-between items-center border-b border-white/10 pb-6 mb-6">
               <div>
                 <h1 className="text-white text-3xl font-black tracking-wide drop-shadow-sm">
-                  {weather.city || t("loading")}
+                  {weather?.city || t("loading")}
                 </h1>
                 <p className="text-blue-200 text-sm font-medium mt-1">
                   {formattedDate}
@@ -125,27 +147,25 @@ function App() {
             <div className="grid grid-cols-2 gap-4 items-center py-4">
               <div className="flex justify-center items-center">
                 <div className="relative group cursor-pointer">
-                  <div className="absolute -inset-1 bg-linear-to-r from-yellow-400 to-orange-500 rounded-full blur-md opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                  <div
+                    className={`absolute -inset-1 bg-linear-to-r ${glowClass} rounded-full blur-md opacity-25 group-hover:opacity-50 transition duration-1000`}
+                  ></div>
 
-                  <svg
-                    className="relative w-28 h-28 drop-shadow-lg text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 3v1.5m0 15V21m-9-9h1.5m16.5 0H21m-1.5-6h-1.5M4.5 6H6m13.5 12h-1.5m-12 0H6"
-                      className="animate-spin opacity-80 [animation-duration:15s]"
-                    />
-                  </svg>
+                  <div className="relative w-28 h-28 flex justify-center items-center">
+                    {isHot ? (
+                      <FontAwesomeIcon
+                        icon={faSun}
+                        className="text-6xl text-amber-200 animate-spin"
+                        style={{ animationDuration: "15s" }}
+                      />
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faCloudShowersHeavy}
+                        className="text-6xl text-blue-200 animate-bounce"
+                        style={{ animationDuration: "2.5s" }}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -154,14 +174,14 @@ function App() {
               >
                 <div className="flex items-start">
                   <span className="text-white text-6xl font-extrabold tracking-tighter drop-shadow-md">
-                    {weather.temp !== null ? Math.round(weather.temp) : "--"}
+                    {weather?.temp !== null && weather?.temp !== undefined ? Math.round(weather.temp) : "--"}
                   </span>
                   <span className="text-blue-300 text-2xl font-light mt-1 mx-1">
                     °C
                   </span>
                 </div>
                 <p className="text-blue-100 text-sm font-semibold tracking-wider uppercase mt-1">
-                  {weather.desc}
+                  {weather?.desc || "--"}
                 </p>
               </div>
             </div>
@@ -173,7 +193,7 @@ function App() {
                   {t("min")}
                 </span>
                 <span className="text-white text-lg font-bold mt-1">
-                  {weather.min !== null ? `${Math.round(weather.min)}°` : "--"}
+                  {weather?.min !== null && weather?.min !== undefined ? `${Math.round(weather.min)}°` : "--"}
                 </span>
               </div>
 
@@ -182,7 +202,7 @@ function App() {
                   {t("humidity")}
                 </span>
                 <span className="text-white text-lg font-bold mt-1">
-                  {weather.humidity !== null ? `${weather.humidity}%` : "--"}
+                  {weather?.humidity !== null && weather?.humidity !== undefined ? `${weather.humidity}%` : "--"}
                 </span>
               </div>
 
@@ -191,7 +211,7 @@ function App() {
                   {t("max")}
                 </span>
                 <span className="text-white text-lg font-bold mt-1">
-                  {weather.max !== null ? `${Math.round(weather.max)}°` : "--"}
+                  {weather?.max !== null && weather?.max !== undefined ? `${Math.round(weather.max)}°` : "--"}
                 </span>
               </div>
             </div>
@@ -202,7 +222,7 @@ function App() {
       {/* Language Toggle */}
       <button
         onClick={handleLanguageToggle}
-        className="mt-6 px-5 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white text-sm font-medium transition-all duration-200 backdrop-blur-sm cursor-pointer"
+        className="mt-6 px-5 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white text-sm font-medium transition-all duration-200 backdrop-blur-sm cursor-pointer relative z-10"
       >
         {isArabic ? "English" : "عربي"}
       </button>
