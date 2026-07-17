@@ -13,6 +13,33 @@ const CITIES = [
   { nameAr: "دبي", nameEn: "Dubai", lat: 25.2048, lon: 55.2708 },
   { nameAr: "لندن", nameEn: "London", lat: 51.5074, lon: -0.1278 },
   { nameAr: "نيويورك", nameEn: "New York", lat: 40.7128, lon: -74.006 },
+
+  // Arab cities
+  { nameAr: "جدة", nameEn: "Jeddah", lat: 21.5433, lon: 39.1728 },
+  { nameAr: "مكة", nameEn: "Mecca", lat: 21.3891, lon: 39.8579 },
+  { nameAr: "المدينة المنورة", nameEn: "Medina", lat: 24.5247, lon: 39.5692 },
+  { nameAr: "الدوحة", nameEn: "Doha", lat: 25.2854, lon: 51.531 },
+  { nameAr: "أبو ظبي", nameEn: "Abu Dhabi", lat: 24.4539, lon: 54.3773 },
+  { nameAr: "الشارقة", nameEn: "Sharjah", lat: 25.3463, lon: 55.4209 },
+  { nameAr: "الكويت", nameEn: "Kuwait City", lat: 29.3759, lon: 47.9774 },
+  { nameAr: "مسقط", nameEn: "Muscat", lat: 23.588, lon: 58.3829 },
+  { nameAr: "المنامة", nameEn: "Manama", lat: 26.2235, lon: 50.5876 },
+  { nameAr: "صنعاء", nameEn: "Sana'a", lat: 15.3694, lon: 44.191 },
+  { nameAr: "عدن", nameEn: "Aden", lat: 12.7855, lon: 45.0187 },
+  { nameAr: "القاهرة", nameEn: "Cairo", lat: 30.0444, lon: 31.2357 },
+  { nameAr: "الإسكندرية", nameEn: "Alexandria", lat: 31.2001, lon: 29.9187 },
+  { nameAr: "عمّان", nameEn: "Amman", lat: 31.9454, lon: 35.9284 },
+  { nameAr: "بيروت", nameEn: "Beirut", lat: 33.8938, lon: 35.5018 },
+  { nameAr: "دمشق", nameEn: "Damascus", lat: 33.5138, lon: 36.2765 },
+  { nameAr: "القدس", nameEn: "Jerusalem", lat: 31.7683, lon: 35.2137 },
+  { nameAr: "غزة", nameEn: "Gaza", lat: 31.5017, lon: 34.4668 },
+  { nameAr: "الجزائر", nameEn: "Algiers", lat: 36.7538, lon: 3.0588 },
+  { nameAr: "تونس", nameEn: "Tunis", lat: 36.8065, lon: 10.1815 },
+  { nameAr: "طرابلس", nameEn: "Tripoli", lat: 32.8872, lon: 13.1913 },
+  { nameAr: "الرباط", nameEn: "Rabat", lat: 34.0209, lon: -6.8416 },
+  { nameAr: "الدار البيضاء", nameEn: "Casablanca", lat: 33.5731, lon: -7.5898 },
+  { nameAr: "نواكشوط", nameEn: "Nouakchott", lat: 18.0735, lon: -15.9582 },
+  { nameAr: "الخرطوم", nameEn: "Khartoum", lat: 15.5007, lon: 32.5599 },
 ];
 
 function App() {
@@ -71,18 +98,42 @@ function App() {
       {/* 🌧️ تأثير المطر المتحرك: تم استبدال الكلاسات المخصصة بالكلاسات القياسية لتفادي التحذيرات */}
       {!isHot && (
         <div className="absolute inset-0 pointer-events-none z-0 opacity-40">
-          <div className="absolute w-0.5 h-5 bg-white top-0 left-[10%] animate-rain" style={{ animationDuration: '0.8s' }}></div>
-          <div className="absolute w-0.5 h-6 bg-white top-0 left-[25%] animate-rain" style={{ animationDuration: '1.2s', animationDelay: '0.2s' }}></div>
-          <div className="absolute w-px h-4.5 bg-white top-0 left-[40%] animate-rain" style={{ animationDuration: '0.9s', animationDelay: '0.5s' }}></div>
-          <div className="absolute w-0.5 h-5.5 bg-white top-0 left-[55%] animate-rain" style={{ animationDuration: '1.1s', animationDelay: '0.1s' }}></div>
-          <div className="absolute w-px h-5 bg-white top-0 left-[70%] animate-rain" style={{ animationDuration: '0.7s', animationDelay: '0.4s' }}></div>
-          <div className="absolute w-0.5 h-6 bg-white top-0 left-[85%] animate-rain" style={{ animationDuration: '1.3s', animationDelay: '0.3s' }}></div>
-          <div className="absolute w-0.5 h-4.5 bg-white top-0 left-[95%] animate-rain" style={{ animationDuration: '1.0s', animationDelay: '0.6s' }}></div>
+          <div
+            className="absolute w-0.5 h-5 bg-white top-0 left-[10%] animate-rain"
+            style={{ animationDuration: "0.8s" }}
+          ></div>
+          <div
+            className="absolute w-0.5 h-6 bg-white top-0 left-[25%] animate-rain"
+            style={{ animationDuration: "1.2s", animationDelay: "0.2s" }}
+          ></div>
+          <div
+            className="absolute w-px h-4.5 bg-white top-0 left-[40%] animate-rain"
+            style={{ animationDuration: "0.9s", animationDelay: "0.5s" }}
+          ></div>
+          <div
+            className="absolute w-0.5 h-5.5 bg-white top-0 left-[55%] animate-rain"
+            style={{ animationDuration: "1.1s", animationDelay: "0.1s" }}
+          ></div>
+          <div
+            className="absolute w-px h-5 bg-white top-0 left-[70%] animate-rain"
+            style={{ animationDuration: "0.7s", animationDelay: "0.4s" }}
+          ></div>
+          <div
+            className="absolute w-0.5 h-6 bg-white top-0 left-[85%] animate-rain"
+            style={{ animationDuration: "1.3s", animationDelay: "0.3s" }}
+          ></div>
+          <div
+            className="absolute w-0.5 h-4.5 bg-white top-0 left-[95%] animate-rain"
+            style={{ animationDuration: "1.0s", animationDelay: "0.6s" }}
+          ></div>
         </div>
       )}
 
       {/* اختيار المدينة */}
-      <div className="w-full max-w-md mb-4 relative z-10" dir={isArabic ? "rtl" : "ltr"}>
+      <div
+        className="w-full max-w-md mb-4 relative z-10"
+        dir={isArabic ? "rtl" : "ltr"}
+      >
         <label className="block text-blue-200 text-xs font-semibold uppercase tracking-wider mb-2 px-1">
           {t("chooseCity")}
         </label>
@@ -174,7 +225,9 @@ function App() {
               >
                 <div className="flex items-start">
                   <span className="text-white text-6xl font-extrabold tracking-tighter drop-shadow-md">
-                    {weather?.temp !== null && weather?.temp !== undefined ? Math.round(weather.temp) : "--"}
+                    {weather?.temp !== null && weather?.temp !== undefined
+                      ? Math.round(weather.temp)
+                      : "--"}
                   </span>
                   <span className="text-blue-300 text-2xl font-light mt-1 mx-1">
                     °C
@@ -193,7 +246,9 @@ function App() {
                   {t("min")}
                 </span>
                 <span className="text-white text-lg font-bold mt-1">
-                  {weather?.min !== null && weather?.min !== undefined ? `${Math.round(weather.min)}°` : "--"}
+                  {weather?.min !== null && weather?.min !== undefined
+                    ? `${Math.round(weather.min)}°`
+                    : "--"}
                 </span>
               </div>
 
@@ -202,7 +257,9 @@ function App() {
                   {t("humidity")}
                 </span>
                 <span className="text-white text-lg font-bold mt-1">
-                  {weather?.humidity !== null && weather?.humidity !== undefined ? `${weather.humidity}%` : "--"}
+                  {weather?.humidity !== null && weather?.humidity !== undefined
+                    ? `${weather.humidity}%`
+                    : "--"}
                 </span>
               </div>
 
@@ -211,7 +268,9 @@ function App() {
                   {t("max")}
                 </span>
                 <span className="text-white text-lg font-bold mt-1">
-                  {weather?.max !== null && weather?.max !== undefined ? `${Math.round(weather.max)}°` : "--"}
+                  {weather?.max !== null && weather?.max !== undefined
+                    ? `${Math.round(weather.max)}°`
+                    : "--"}
                 </span>
               </div>
             </div>
